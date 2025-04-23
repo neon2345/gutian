@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>古田县地图展示</title>
+    <style>
+        html, body, #container {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+<div id="container"></div>
+<script type="text/javascript">
+    window._AMapSecurityConfig = {
+        securityJsCode:'8c9a26e733b197e9a8b86ea7baa3d592',
+    }
+</script>
+<script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=05274d5027e6b22978b2ade4630f3596"></script>
+<script src="https://webapi.amap.com/ui/1.1/main.js"></script>
+<script>
+
+    const map = new AMap.Map('container', {
+        zoom: 11,          
+        center: [118.746284, 26.578343],
+        viewMode: '2D',
+        pitch: 0
+    });
+
+
+    map.on('complete', function() {
+
+        AMap.plugin(['AMap.DistrictSearch'], function() {
+
+            const districtSearch = new AMap.DistrictSearch({
+                level: 'district',
+                subdistrict: 0,
+                extensions: 'all'
+            });
+
+
+            districtSearch.search('古田县', function(status, result) {
+                console.log('搜索状态:', status);
+                console.log('搜索结果:', result);
+                
+                if (status === 'complete') {
+                    const district = result.districtList[0];
+                    
+                    if (district && district.boundaries) {
+
+                        const countyPolygon = new AMap.Polygon({
+                            path: district.boundaries,
+                            strokeColor: '#3366FF',
+                            strokeWeight: 3,
+                            strokeOpacity: 1,
+                            fillColor: '#CCF3FF',
+                            fillOpacity: 0.3
+                        });
+                        
+                        map.add(countyPolygon);
+
+                        const hexagon1 = new AMap.Polygon({
+                            path: [[118.74451242768818, 26.55978130540227],
+                                  [118.74946444188605, 26.590493160141598],
+                                  [118.72282814656256, 26.61271948928907],
+                                  [118.69119676748149, 26.60420454436936],
+                                  [118.68623914025737, 26.57347525756686],
+                                  [118.71291618966401, 26.551276287559922]],
+                            strokeColor: '#3366FF',
+                            strokeWeight: 2,
+                            strokeOpacity: 1,
+                            fillColor: '#3366FF',
+                            fillOpacity: 0.4
+                        });
+
+                        const hexagon2 = new AMap.Polygon({
+                            path: [[118.80261205887932, 26.545960302217246],
+                                  [118.8075564068438, 26.576652940738775],
+                                  [118.7810057099321, 26.59893541796132],
+                                  [118.74946444188605, 26.590493160141598],
+                                  [118.74451242768818, 26.55978130540227],
+                                  [118.77111072211933, 26.53753218447906]],
+                            strokeColor: '#3366FF',
+                            strokeWeight: 2,
+                            strokeOpacity: 1,
+                            fillColor: '#3366FF',
+                            fillOpacity: 0.4
+                        });
+                        const hexagon3 = new AMap.Polygon({
+                            path: [[118.65651061367261, 26.388884182228825],
+                                    [118.66146278994604, 26.419674494652917],
+                                    [118.6347810465112, 26.441876165846953],
+                                    [118.60316874407486, 26.433316053086674],
+                                    [118.59822973885238, 26.402525127823967],
+                                    [118.62488738304822, 26.380292687214542]],
+                            strokeColor: '#3366FF',
+                            strokeWeight: 2,
+                            strokeOpacity: 1,
+                            fillColor: '#3366FF',
+                            fillOpacity: 0.4
+                        });
+                        
+
+                        map.add([hexagon1, hexagon2,hexagon3]);
+                        
+                    } else {
+                        console.error('未获取到边界数据');
+                    }
+                } else {
+                    console.error('行政区划查询失败');
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>
